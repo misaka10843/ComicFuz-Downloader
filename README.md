@@ -132,6 +132,8 @@ urllib.error.URLError: <urlopen error [Errno 2] No such file or directory>
 
 ## More
 
+原分支仓库：[EnkanRec/ComicFuz-Down](https://github.com/EnkanRec/ComicFuz-Down)
+
 `.proto` is rebuild with reading form [Official protobuf in js](https://comic-fuz.com/_next/static/chunks/pages/_app-b24da103ab4a3f25b6bc.js)
 
 自动构建程序icon：[xuzhengyi1995](https://github.com/xuzhengyi1995)/**[Comic-fuz-Downloader](https://github.com/xuzhengyi1995/Comic-fuz-Downloader)**
