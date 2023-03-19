@@ -49,7 +49,7 @@ def main():
         level=logging.DEBUG if args.verbose else logging.INFO, format="%(message)s")
     print(
         "[white]= [#f9487d]ComicFuz-Extractor [#00BFFF]made with [red]:red_heart-emoji: [#00BFFF]by EnkanRec Repaired "
-        "[white]and [#00BFFF]Modified by misaka10843[white]=")
+        "[white]and [#00BFFF]Modified and repair by misaka10843[white]=")
     os.makedirs(args.output_dir, exist_ok=True)
 
     token = get_session(args.token_file, args.user_email, args.password)
