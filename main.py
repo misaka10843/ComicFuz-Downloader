@@ -63,7 +63,7 @@ def main():
     if args.manga:
         downloadedPath = down_manga(args.output_dir, args.manga, token, que)
     if args.compression:
-        compression(args.compression, downloadedPath, args.output_dir, args.quality)
+        compression(args.compression, downloadedPath, args.output_dir, args.quality,args.keepog)
     logging.debug("Done.")
 
 
@@ -300,13 +300,13 @@ def hasNumbers(chat):
     return "".join(res_list)
 
 
-def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, save_og: bool):
+def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, save_og: int):
     print("[bold yellow]正在进行压缩中...")
     allRun = False
     if comType == 3:
         allRun = True
     if comType == 2 or allRun is True:
-        if save_og:
+        if save_og == 1 or save_og == 2:
             source_path = os.path.abspath(fr'{out_dir}/{download_dir}')
             target_path = os.path.abspath(fr'{out_dir}/{download_dir}_og')
             if not os.path.exists(target_path):
@@ -332,7 +332,14 @@ def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, 
         with console.status(f"[bold yellow]正在将{download_dir}压缩成7z中"):
             with py7zr.SevenZipFile(f'{out_dir}/{download_dir}.7z', 'w') as archive:
                 archive.writeall(f"{out_dir}/{download_dir}")
-        print("[bold green]已经将图片打包压缩")
+        print(f"[bold green]已经将图片打包压缩到{out_dir}/{download_dir}.7z")
+    # 进行压缩
+    if save_og == 2:
+        with console.status(f"[bold yellow]正在将{download_dir}的原图压缩成7z中"):
+            with py7zr.SevenZipFile(f'{out_dir}/{download_dir}_og.7z', 'w') as archive:
+                archive.writeall(f"{out_dir}/{download_dir}_og")
+        print(f"[bold green]已经将原图打包压缩到{out_dir}/{download_dir}_og.7z")
+
 
 
 def getParser():
@@ -401,6 +408,13 @@ def getParser():
         metavar='<1/2/3>',
         type=int,
         help="使用7z与ffmpeg压缩图片(1为仅生成压缩包,2为仅使用PIL压缩图片,3为两者都使用)")
+    parser.add_argument(
+        '-k',
+        '--keepog',
+        metavar='<0/1/2>',
+        default=0,
+        type=int,
+        help="是否保留原图片(默认不保留，1为保留，2为保留并压缩，0为不保留)")
     parser.add_argument(
         '-q',
         '--quality',

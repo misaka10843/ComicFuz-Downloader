@@ -7,6 +7,7 @@
 
 ![image.png](https://s2.loli.net/2023/02/19/deW4goM2pNfJlqS.png)
 ![image.png](https://s2.loli.net/2023/02/19/PdabVKxiqu3j2Az.png)
+![image.png](https://s2.loli.net/2023/03/19/3salmTkZ4GEvgBV.png)
 
 ## 支持功能
 * 漫画/单行本/杂志多线程下载
@@ -32,8 +33,8 @@ py7zr
 ## 如何使用
 
 ```bash
-$ python main.py --help
-usage: main.py [-h] [-t <Token文件路径>] [-u <用户email>] [-p [<密码>]] [-o <输出路径>] [-j <并行线程数>] [-b <BookId>] [-m <MangaId>] [-z <MagazineId>] [-v] [-y <ip:port>] [-c <1/2/3>] [-q <quality number>]
+$ python main.py --help                                                       
+usage: main.py [-h] [-t <Token文件路径>] [-u <用户email>] [-p [<密码>]] [-o <输出路径>] [-j <并行线程数>] [-b <BookId>] [-m <MangaId>] [-z <MagazineId>] [-v] [-y <ip:port>] [-c <1/2/3>] [-k <0/1/2>] [-q <quality number>]
 
 options:
   -h, --help            show this help message and exit
@@ -58,6 +59,8 @@ options:
                         设置程序代理(http代理)
   -c <1/2/3>, --compression <1/2/3>
                         使用7z与ffmpeg压缩图片(1为仅生成压缩包,2为仅使用PIL压缩图片,3为两者都使用)
+  -k <0/1/2>, --keepog <0/1/2>
+                        是否保留原图片(默认不保留，1为保留，2为保留并压缩，0为不保留)
   -q <quality number>, --quality <quality number>
                         设置压缩图片的质量(越高文件越大,默认80)
 
@@ -68,9 +71,9 @@ options:
 
 `fuz_down -t token.txt -m 2443 -y 127.0.0.1`
 
-`python .\fuz_down.py -t token.txt -y 127.0.0.1:7890 -j 64 -z 26235`
+`python .\main.py -t token.txt -y 127.0.0.1:7890 -j 64 -z 26235`
 
-`python .\fuz_down.py -t token.txt -y 127.0.0.1:7890 -j 64 -z 26235 -c 3 -q 60`
+` python main.py -t token.txt -y 127.0.0.1:7890 -j 64 -b 26001 -c 3 -q 60 -k 2`
 
 ### 注意！
 
