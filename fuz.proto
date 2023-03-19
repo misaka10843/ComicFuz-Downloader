@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+message DeviceInfo {
+    enum DeviceType {
+        IOS = 0;
+        ANDROID = 1;
+        BROWSER = 2;
+    }
+    string secret = 1;
+    string appVer = 2;
+    DeviceType deviceType = 3;
+    string osVer = 4;
+    bool isTablet = 5;
+}
+
+message UserPoint {
+    uint32 event = 1;
+    uint32 paid = 2;
+}
+
+message Chapter {
+    enum Badge {
+        NONE = 0;
+        UPDATE = 1;
+        ADVANCE = 2;
+        SPECIAL = 3;
+    }
+    message PointConsumption {
+        enum Type {
+            ANY_ITEMS = 0;
+            EVENT_OR_PAID = 1;
+            PAID_ONLY = 2;
+        }
+        Type type = 1;
+        uint32 amount = 2;
+    }
+    uint32 chapterId = 1;
+    string chapterMainName = 2;
+    string chapterSubName = 3;
+    string thumbnailUrl = 4;
+    PointConsumption pointConsumption = 5;
+    uint32 numberOfComments = 6;
+    uint32 numberOfLikes = 7;
+    string updatedDate = 8;
+    bool isRead = 9;
+    string endOfRentalPeriod = 10;
+    string firstPageImageUrl = 11;
+    Badge badge = 12;
+}
+
+message BookIssue {
+    enum PurchaseStatus {
+        NONE = 0;
+        WISHED = 1;
+        PURCHASED = 2;
+    }
+    uint32 bookIssueId = 1;
+    string bookIssueName = 2;
+    string thumbnailUrl = 3;
+    uint32 paidPoint = 4;
+    uint32 campaignPaidPoint = 5;
+    bool isDiscountCampaign = 6;
+    bool isFreeCampaign = 7;
+    uint32 numberOfSamplePages = 8;
+    uint32 numberOfComments = 9;
+    string updatedDate = 10;
+    PurchaseStatus purchaseStatus = 11;
+    string expirationDateOfFreeCampaign = 12;
+    string firstPageImageUrl = 13;
+    string campaign = 14;
+    string longDescription = 15;
+    string bookName = 16;
+    UserPoint cashBack = 17;
+    bool isRead = 18;
+}
+
+message MagazineIssue {
+    uint32 magazineIssueId = 1;
+    string magazineIssueName = 2;
+    string thumbnailUrl = 3;
+    uint32 paidPoint = 4;
+    uint32 campaignPaidPoint = 5;
+    bool isDiscountCampaign = 6;
+    bool isFreeCampaign = 7;
+    uint32 numberOfSamplePages = 8;
+    uint32 numberOfComments = 9;
+    string updatedDate = 10;
+    string endDate = 11;
+    bool isPurchased = 12;
+    bool isSubscribed = 13;
+    string firstPageImageUrl = 14;
+    string campaign = 15;
+    string longDescription = 16;
+    string magazineName = 17;
+    UserPoint cashBack = 18;
+    bool isRead = 19;
+}
+
+message Sns {
+    string body = 1;
+    string url = 2;
+}
+
+message ViewerMode {
+    enum ImageQuality {
+        NORMAL = 0;
+        HIGH = 1;
+    }
+    ImageQuality imageQuality = 1;
+}
+
+message ViewerPage {
+    message Image {
+        string imageUrl = 1;
+        string urlScheme = 2;
+        string iv = 3;
+        string encryptionKey = 4;
+    }
+    message WebView {
+        string url = 1;
+    }
+    message LastPage {}
+    Image image = 1;
+    WebView webview = 2;
+    LastPage lastPage = 3;
+}
+
+enum ScrollDirection {
+    LEFT = 0;
+    RIGHT = 1;
+}
+
+message BookViewer2Request {
+    DeviceInfo deviceInfo = 1;
+    uint32 bookIssueId = 2;
+    bool purchaseRequest = 3;
+    uint32 consumePaidPoint = 4;
+    ViewerMode viewerMode = 5;
+}
+
+message BookViewer2Response {
+    repeated ViewerPage pages = 1;
+    bool isCommentEnabled = 2;
+    Sns sns = 3;
+    uint32 shioriPage = 4;
+    ScrollDirection scroll = 5;
+    UserPoint userPoint = 6;
+    bool isFirstPageBlank = 7;
+    BookIssue bookIssue = 8;
+    UserPoint cashBack = 9;
+}
+
+message MagazineViewer2Request {
+    DeviceInfo deviceInfo = 1;
+    uint32 magazineIssueId = 2;
+    bool purchaseRequest = 3;
+    uint32 consumePaidPoint = 4;
+    ViewerMode viewerMode = 5;
+}
+
+message MagazineViewer2Response {
+    message Content {
+        uint32 startPage = 1;
+        string mangaName = 2;
+    }
+    repeated ViewerPage pages = 1;
+    bool isCommentEnabled = 2;
+    Sns sns = 3;
+    repeated Content tableOfContents = 4;
+    uint32 shioriPage = 5;
+    ScrollDirection scroll = 6;
+    UserPoint userPoint = 7;
+    bool isFirstPageBlank = 8;
+    MagazineIssue magazineIssue = 9;
+    UserPoint cashBack = 10;
+}
+
+message MangaViewerRequest {
+    DeviceInfo deviceInfo = 1;
+    uint32 chapterId = 2;
+    bool useTicket = 3;
+    UserPoint userPoint = 4;
+    ViewerMode viewerMode = 5;
+}
+
+message MangaViewerResponse {
+    UserPoint cashBack = 1;
+    string viewerTitle = 2;
+    repeated ViewerPage pages = 3;
+    bool isCommentEnabled = 4;
+    Sns sns = 5;
+    ScrollDirection scroll = 6;
+    bool isFirstPageBlank = 8;
+}
+
+message SignInRequest {
+    DeviceInfo deviceInfo = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message SignInResponse {
+    bool success = 1;
+}
+
+message WebMypageResponse {
+    string mailAddress = 1;
+}
