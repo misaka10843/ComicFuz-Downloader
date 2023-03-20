@@ -131,7 +131,7 @@ urllib.error.URLError: <urlopen error [Errno 2] No such file or directory>
 urllib.error.URLError: <urlopen error [Errno 2] No such file or directory>
 ```
 
-请重新运行一次你刚刚运行的命令，这似乎是因为**线程太多或者短时间内防蚊次数过多**导致一些图片并未下载，重新运行后，程序会自动识别是否下载，然后进行补充下载
+请重新运行一次你刚刚运行的命令，这似乎是因为**线程太多或者短时间内防蚊次数过多**导致一些图片并未下载，重新运行后，程序会自动识别是否下载，然后进行补充下载(如果使用了图片压缩，可能需要重新下载，如果启动图片压缩并备份了原图，请删除压缩后的文件夹并将原图文件夹后面的_og删除再重新运行)
 
 ## More
 
