@@ -1,3 +1,4 @@
+![qwq](./repository-open-graph-template.png)
 
 ## 简介
 
@@ -10,6 +11,7 @@
 ![image.png](https://s2.loli.net/2023/03/19/3salmTkZ4GEvgBV.png)
 
 ## 支持功能
+
 * 漫画/单行本/杂志多线程下载
 * 使用代理
 * 自定义线程数量
@@ -67,15 +69,15 @@ options:
 
 ```
 
-### 命令示例：
+### 命令示例
 
 `fuz_down -t token.txt -m 2443 -y 127.0.0.1`
 
 `python .\main.py -t token.txt -y 127.0.0.1:7890 -j 64 -z 26235`
 
-` python main.py -t token.txt -y 127.0.0.1:7890 -j 64 -b 26001 -c 3 -q 60 -k 2`
+`python main.py -t token.txt -y 127.0.0.1:7890 -j 64 -b 26001 -c 3 -q 60 -k 2`
 
-### 注意！
+### 注意
 
 一般情况下，只需要传入 `-t token.txt`即可，无需传入用户邮箱与密码，如果指定的token文件为空，程序会自动向您索取邮箱与密码！
 
