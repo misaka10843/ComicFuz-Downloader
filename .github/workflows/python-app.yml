@@ -8,6 +8,7 @@ on:
       - main
     paths-ignore:
       - '*.md'
+      - 'dependabot.yml'
 
 jobs:
   linux-build:
