@@ -36,7 +36,7 @@ urlopen = build_opener()
 
 def main():
     global urlopen
-    parser = getParser()
+    parser = get_parser()
     args = parser.parse_args()
     # 添加代理
     if args.proxy:
@@ -55,15 +55,15 @@ def main():
     token = get_session(args.token_file, args.user_email, args.password)
     que = Queue(args.n_jobs)
     Thread(target=worker, args=(que,), daemon=True).start()
-    downloadedPath = ""
+    downloaded_path = ""
     if args.book:
-        downloadedPath = down_book(args.output_dir, args.book, token, que)
+        downloaded_path = down_book(args.output_dir, args.book, token, que)
     if args.magazine:
-        downloadedPath = down_magazine(args.output_dir, args.magazine, token, que)
+        downloaded_path = down_magazine(args.output_dir, args.magazine, token, que)
     if args.manga:
-        downloadedPath = down_manga(args.output_dir, args.manga, token, que)
+        downloaded_path = down_manga(args.output_dir, args.manga, token, que)
     if args.compression:
-        compression(args.compression, downloadedPath, args.output_dir, args.quality,args.keepog)
+        compression(args.compression, downloaded_path, args.output_dir, args.quality, args.keepog)
     logging.debug("Done.")
 
 
@@ -131,7 +131,8 @@ def get_session(file: str, user: str, pwd: str) -> str:
     except Exception as e:
         console.print_exception(show_locals=True)
         console.print(
-            "\n[bold yellow]自动获取token出错！\n请如果输出fuz_session_key类似的内容，请从fuz_session_key=开始复制(不包含fuz_session_key=)到第一个分号(;)\n然后存入-t指定的文件中")
+            "\n[bold yellow]自动获取token出错！\n请如果输出fuz_session_key类似的内容，请从fuz_session_key=开始复制("
+            "不包含fuz_session_key=)到第一个分号(;)\n然后存入-t指定的文件中")
         exit()
 
 
@@ -157,10 +158,10 @@ def get_index(path: str, body: str, token: str) -> str:
         exit()
 
 
-def get_book_index(bookId: int, token: str) -> fuz_pb2.BookViewer2Response:
+def get_book_index(book_id: int, token: str) -> fuz_pb2.BookViewer2Response:
     body = fuz_pb2.BookViewer2Request()
     body.deviceInfo.deviceType = fuz_pb2.DeviceInfo.DeviceType.BROWSER
-    body.bookIssueId = bookId
+    body.bookIssueId = book_id
     body.viewerMode.imageQuality = fuz_pb2.ViewerMode.ImageQuality.HIGH
 
     res = get_index("/v1/book_viewer_2", body.SerializeToString(), token)
@@ -169,10 +170,10 @@ def get_book_index(bookId: int, token: str) -> fuz_pb2.BookViewer2Response:
     return index
 
 
-def get_magazine_index(magazineId: int, token: str) -> fuz_pb2.MagazineViewer2Response:
+def get_magazine_index(magazine_id: int, token: str) -> fuz_pb2.MagazineViewer2Response:
     body = fuz_pb2.MagazineViewer2Request()
     body.deviceInfo.deviceType = fuz_pb2.DeviceInfo.DeviceType.BROWSER
-    body.magazineIssueId = magazineId
+    body.magazineIssueId = magazine_id
     body.viewerMode.imageQuality = fuz_pb2.ViewerMode.ImageQuality.HIGH
 
     res = get_index("/v1/magazine_viewer_2", body.SerializeToString(), token)
@@ -181,10 +182,10 @@ def get_magazine_index(magazineId: int, token: str) -> fuz_pb2.MagazineViewer2Re
     return index
 
 
-def get_manga_index(mangaId: int, token: str) -> fuz_pb2.MangaViewerResponse:
+def get_manga_index(manga_id: int, token: str) -> fuz_pb2.MangaViewerResponse:
     body = fuz_pb2.MangaViewerRequest()
     body.deviceInfo.deviceType = fuz_pb2.DeviceInfo.DeviceType.BROWSER
-    body.chapterId = mangaId
+    body.chapterId = manga_id
     body.viewerMode.imageQuality = fuz_pb2.ViewerMode.ImageQuality.HIGH
 
     res = get_index("/v1/manga_viewer", body.SerializeToString(), token)
@@ -193,7 +194,7 @@ def get_manga_index(mangaId: int, token: str) -> fuz_pb2.MangaViewerResponse:
     return index
 
 
-def downloadThumb(save_dir: str, url: str, overwrite=False):
+def download_thumb(save_dir: str, url: str, overwrite=False):
     name = re.match(r'.*/([0-9a-zA-Z_-]+)\.(\w+)\?.*', url)
     if not name or not name.group(1):
         print("Can't gass filename: ", url)
@@ -228,7 +229,8 @@ def download(save_dir: str, image: fuz_pb2.ViewerPage.Image, overwrite=False):
     out = decryptor.update(data) + decryptor.finalize()
     with open(name, "wb") as f:
         f.write(out)
-    # os.system(f"curl -s \"{IMG_HOST}{image.imageUrl}\" | openssl aes-256-cbc -d -K {image.encryptionKey} -iv {image.iv} -in - -out {name}")
+    # os.system(f"curl -s \"{IMG_HOST}{image.imageUrl}\" | openssl aes-256-cbc -d -K {image.encryptionKey} -iv {
+    # image.iv} -in - -out {name}")
     logging.debug("Downloaded: %s", name)
 
 
@@ -257,34 +259,34 @@ def down_pages(
 
 def down_book(out_dir: str, book_id: int, token: str, que: Queue):
     book = get_book_index(book_id, token)
-    bookIssueId = str(book.bookIssue.bookIssueId)
+    book_issue_id = str(book.bookIssue.bookIssueId)
     with console.status(
-            f"[bold yellow]正在下载:[{bookIssueId}]{book.bookIssue.bookIssueName}[/]"):
+            f"[bold yellow]正在下载:[{book_issue_id}]{book.bookIssue.bookIssueName}[/]"):
         down_pages(
-            f"{out_dir}/{hasNumbers(str(book.bookIssue.bookIssueName))}/", book, que)
+            f"{out_dir}/{has_numbers(str(book.bookIssue.bookIssueName))}/", book, que)
     print(
-        f"[bold green]{hasNumbers(str(book.bookIssue.bookIssueName))}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
-    return f"{hasNumbers(str(book.bookIssue.bookIssueName))}"
+        f"[bold green]{has_numbers(str(book.bookIssue.bookIssueName))}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
+    return f"{has_numbers(str(book.bookIssue.bookIssueName))}"
 
 
 def down_magazine(out_dir: str, magazine_id: int, token: str, que: Queue):
     magazine = get_magazine_index(magazine_id, token)
-    magazineName = str(magazine.magazineIssue.magazineName)
-    if magazineName == 'まんがタイムきらら':
-        magazineName = "Kirara"
-    elif magazineName == 'まんがタイムきららMAX':
-        magazineName = "Max"
-    elif magazineName == 'まんがタイムきららキャラット':
-        magazineName = "Carat"
-    elif magazineName == 'まんがタイムきららフォワード':
-        magazineName = "Forward"
+    magazine_name = str(magazine.magazineIssue.magazineName)
+    if magazine_name == 'まんがタイムきらら':
+        magazine_name = "Kirara"
+    elif magazine_name == 'まんがタイムきららMAX':
+        magazine_name = "Max"
+    elif magazine_name == 'まんがタイムきららキャラット':
+        magazine_name = "Carat"
+    elif magazine_name == 'まんがタイムきららフォワード':
+        magazine_name = "Forward"
     with console.status(
-            f"[bold yellow]正在下载:[{magazineName}]{magazine.magazineIssue.magazineIssueName}[/]"):
+            f"[bold yellow]正在下载:[{magazine_name}]{magazine.magazineIssue.magazineIssueName}[/]"):
         down_pages(
-            f"{out_dir}/{magazineName}{hasNumbers(str(magazine.magazineIssue.magazineIssueName))}/", magazine, que)
+            f"{out_dir}/{magazine_name}{has_numbers(str(magazine.magazineIssue.magazineIssueName))}/", magazine, que)
     print(
-        f"[bold green]{hasNumbers(str(magazine.magazineIssue.magazineIssueName))}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
-    return f"{magazineName}{hasNumbers(str(magazine.magazineIssue.magazineIssueName))}"
+        f"[bold green]{has_numbers(str(magazine.magazineIssue.magazineIssueName))}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
+    return f"{magazine_name}{has_numbers(str(magazine.magazineIssue.magazineIssueName))}"
 
 
 def down_manga(out_dir: str, manga_id: int, token: str, que: Queue):
@@ -295,17 +297,17 @@ def down_manga(out_dir: str, manga_id: int, token: str, que: Queue):
     return f"m{manga_id}"
 
 
-def hasNumbers(chat):
+def has_numbers(chat):
     res_list = [str(int(i)) if i.isdigit() else i for i in chat]
     return "".join(res_list)
 
 
-def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, save_og: int):
+def compression(com_type: int, download_dir: str, out_dir: str, im_quality: int, save_og: int):
     print("[bold yellow]正在进行压缩中...")
-    allRun = False
-    if comType == 3:
-        allRun = True
-    if comType == 2 or allRun is True:
+    all_run = False
+    if com_type == 3:
+        all_run = True
+    if com_type == 2 or all_run is True:
         if save_og == 1 or save_og == 2:
             source_path = os.path.abspath(fr'{out_dir}/{download_dir}')
             target_path = os.path.abspath(fr'{out_dir}/{download_dir}_og')
@@ -318,8 +320,8 @@ def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, 
             shutil.copytree(source_path, target_path)
             print(f'[bold green]已经将所有原文件复制到{out_dir}/{download_dir}_og中，准备开始图片压缩')
         with console.status(f"[bold yellow]正在将{download_dir}中的图片压缩"):
-            fileList = os.listdir(f'{out_dir}/{download_dir}')
-            for i in fileList:
+            file_list = os.listdir(f'{out_dir}/{download_dir}')
+            for i in file_list:
                 # 判断是否为comic fuz中的特殊(也并不特殊)的后缀
                 if os.path.splitext(i)[1] == '.jpeg':
                     imName = i.split('.')[0]
@@ -328,7 +330,7 @@ def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, 
                     os.remove(f"{out_dir}/{download_dir}/{i}")
         print("[bold green]已经将所有图片压缩完毕")
 
-    if comType == 1 or allRun is True:
+    if com_type == 1 or all_run is True:
         with console.status(f"[bold yellow]正在将{download_dir}压缩成7z中"):
             with py7zr.SevenZipFile(f'{out_dir}/{download_dir}.7z', 'w') as archive:
                 archive.writeall(f"{out_dir}/{download_dir}")
@@ -341,8 +343,7 @@ def compression(comType: int, download_dir: str, out_dir: str, im_quality: int, 
         print(f"[bold green]已经将原图打包压缩到{out_dir}/{download_dir}_og.7z")
 
 
-
-def getParser():
+def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-t',
