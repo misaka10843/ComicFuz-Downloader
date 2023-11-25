@@ -57,11 +57,32 @@ def main():
     Thread(target=worker, args=(que,), daemon=True).start()
     downloaded_path = ""
     if args.book:
-        downloaded_path = down_book(args.output_dir, args.book, token, que)
+        if ',' in args.book:
+            string_list = args.book.split(',')
+            for item in string_list:
+                downloaded_path = down_book(args.output_dir, int(item), token, que)
+                print(f"[bold green]正在等待10s后继续下载")
+                time.sleep(10)
+        else:
+            downloaded_path = down_book(args.output_dir, int(args.book), token, que)
     if args.magazine:
-        downloaded_path = down_magazine(args.output_dir, args.magazine, token, que)
+        if ',' in args.magazine:
+            string_list = args.magazine.split(',')
+            for item in string_list:
+                downloaded_path = down_magazine(args.output_dir, int(item), token, que)
+                print(f"[bold green]正在等待10s后继续下载")
+                time.sleep(10)
+        else:
+            downloaded_path = down_magazine(args.output_dir, int(args.book), token, que)
     if args.manga:
-        downloaded_path = down_manga(args.output_dir, args.manga, token, que)
+        if ',' in args.magazine:
+            string_list = args.manga.split(',')
+            for item in string_list:
+                downloaded_path = down_manga(args.output_dir, int(item), token, que)
+                print(f"[bold green]正在等待10s后继续下载")
+                time.sleep(10)
+        else:
+            downloaded_path = down_manga(args.output_dir, int(args.book), token, que)
     if args.compression:
         compression(args.compression, downloaded_path, args.output_dir, args.quality, args.keepog)
     logging.debug("Done.")
@@ -221,8 +242,13 @@ def download(save_dir: str, image: fuz_pb2.ViewerPage.Image, overwrite=False):
     if not overwrite and os.path.exists(name):
         logging.debug("Exists, continue: %s", name)
         return
-    with urlopen.open(IMG_HOST + image.imageUrl) as r:
-        data = r.read()
+    try:
+        with urlopen.open(IMG_HOST + image.imageUrl) as r:
+            data = r.read()
+    except Exception as e:
+        time.sleep(5)
+        with urlopen.open(IMG_HOST + image.imageUrl) as r:
+            data = r.read()
     key = bytes.fromhex(image.encryptionKey)
     iv = bytes.fromhex(image.iv)
     decryptor = Cipher(algorithms.AES(key), modes.CBC(iv)).decryptor()
