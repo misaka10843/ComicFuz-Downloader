@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 import re
+import time
+
 import fuz_pb2
 import json
 import argparse
@@ -404,19 +406,19 @@ def get_parser():
         '-b',
         '--book',
         metavar='<BookId>',
-        type=int,
+        type=str,
         help="目标单行本Id")
     parser.add_argument(
         '-m',
         '--manga',
         metavar='<MangaId>',
-        type=int,
+        type=str,
         help="目标漫画Id")
     parser.add_argument(
         '-z',
         '--magazine',
         metavar='<MagazineId>',
-        type=int,
+        type=str,
         help="目标杂志Id")
     parser.add_argument(
         '-v',
