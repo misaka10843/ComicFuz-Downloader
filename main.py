@@ -3,6 +3,8 @@ import os
 import re
 import time
 
+from rich.progress import track
+
 import fuz_pb2
 import json
 import argparse
@@ -265,7 +267,8 @@ def download(save_dir: str, image: fuz_pb2.ViewerPage.Image, overwrite=False):
 def down_pages(
         save_dir: str,
         data,  # : fuz_pb2.BookViewer2Response | fuz_pb2.MagazineViewer2Response | fuz_pb2.MangaViewerResponse,
-        que: Queue
+        que: Queue,
+        book_name: str
 ):
     os.makedirs(save_dir, exist_ok=True)
     with open(save_dir + "index.protobuf", "wb") as f:
@@ -276,7 +279,7 @@ def down_pages(
 
     # downloadThumb(save_dir, data.bookIssue.thumbnailUrl)
 
-    for page in data.pages:
+    for page in track(data.pages, description=f"[bold yellow]正在下载:{book_name}[/]"):
         t = Thread(target=download, name=page.image.imageUrl,
                    args=(save_dir, page.image))
         t.start()
@@ -288,10 +291,9 @@ def down_pages(
 def down_book(out_dir: str, book_id: int, token: str, que: Queue):
     book = get_book_index(book_id, token)
     book_issue_id = str(book.bookIssue.bookIssueId)
-    with console.status(
-            f"[bold yellow]正在下载:[{book_issue_id}]{book.bookIssue.bookIssueName}[/]"):
-        down_pages(
-            f"{out_dir}/{has_numbers(str(book.bookIssue.bookIssueName))}/", book, que)
+    down_pages(
+        f"{out_dir}/{has_numbers(str(book.bookIssue.bookIssueName))}/", book, que,
+        f"[{book_issue_id}]{book.bookIssue.bookIssueName}")
     print(
         f"[bold green]{has_numbers(str(book.bookIssue.bookIssueName))}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
     return f"{has_numbers(str(book.bookIssue.bookIssueName))}"
@@ -308,10 +310,9 @@ def down_magazine(out_dir: str, magazine_id: int, token: str, que: Queue):
         magazine_name = "Carat"
     elif magazine_name == 'まんがタイムきららフォワード':
         magazine_name = "Forward"
-    with console.status(
-            f"[bold yellow]正在下载:[{magazine_name}]{magazine.magazineIssue.magazineIssueName}[/]"):
-        down_pages(
-            f"{out_dir}/{magazine_name}{has_numbers(str(magazine.magazineIssue.magazineIssueName))}/", magazine, que)
+    down_pages(
+        f"{out_dir}/{magazine_name}{has_numbers(str(magazine.magazineIssue.magazineIssueName))}/", magazine, que,
+        f"[{magazine_name}]{magazine.magazineIssue.magazineIssueName}[/]")
     print(
         f"[bold green]{has_numbers(str(magazine.magazineIssue.magazineIssueName))}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
     return f"{magazine_name}{has_numbers(str(magazine.magazineIssue.magazineIssueName))}"
@@ -319,8 +320,7 @@ def down_magazine(out_dir: str, magazine_id: int, token: str, que: Queue):
 
 def down_manga(out_dir: str, manga_id: int, token: str, que: Queue):
     manga = get_manga_index(manga_id, token)
-    with console.status(f"[bold yellow]正在下载:[{manga_id}]{manga.viewerTitle}[/]"):
-        down_pages(f"{out_dir}/m{manga_id}/", manga, que)
+    down_pages(f"{out_dir}/m{manga_id}/", manga, que, f"[{manga_id}]{manga.viewerTitle}[/]")
     print(f"[bold green]{manga.viewerTitle}下载完成！如果下载时遇见报错，请重新运行一下命令即可")
     return f"m{manga_id}"
 
@@ -462,5 +462,6 @@ def worker(que: Queue):
         item.join()
         # logging.debug("[%d] ok.", count)
         que.task_done()
+
 
 main()
