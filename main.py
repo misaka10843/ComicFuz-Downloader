@@ -73,16 +73,16 @@ def main():
                 print(f"[bold green]正在等待10s后继续下载")
                 time.sleep(10)
         else:
-            downloaded_path = down_magazine(args.output_dir, int(args.book), token, que)
+            downloaded_path = down_magazine(args.output_dir, int(args.magazine), token, que)
     if args.manga:
-        if ',' in args.magazine:
+        if ',' in args.manga:
             string_list = args.manga.split(',')
             for item in string_list:
                 downloaded_path = down_manga(args.output_dir, int(item), token, que)
                 print(f"[bold green]正在等待10s后继续下载")
                 time.sleep(10)
         else:
-            downloaded_path = down_manga(args.output_dir, int(args.book), token, que)
+            downloaded_path = down_manga(args.output_dir, int(args.manga), token, que)
     if args.compression:
         compression(args.compression, downloaded_path, args.output_dir, args.quality, args.keepog)
     logging.debug("Done.")
