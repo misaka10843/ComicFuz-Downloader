@@ -6,7 +6,7 @@
 
 ### 一些运行截图
 
-![image.png](https://s2.loli.net/2023/02/19/deW4goM2pNfJlqS.png)
+![image.png](https://s2.loli.net/2023/12/22/vXOB2oZRiSt5Yms.png)
 ![image.png](https://s2.loli.net/2023/02/19/PdabVKxiqu3j2Az.png)
 ![image.png](https://s2.loli.net/2023/03/19/3salmTkZ4GEvgBV.png)
 
