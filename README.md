@@ -23,6 +23,12 @@
 
 如需其他功能可以在Issue中提出！
 
+## 更多版本
+
+* [Mini Ver](https://github.com/misaka10843/ComicFuz-MiniDownloader) ：精简版，仅支持杂志下载，支持调用/检测杂志更新
+* [OneBot Ver](https://github.com/HoubunSOP/ComicFuz-MagazineDownloader) ：Mini Ver + OneBot的特殊版本，支持检测更新下载压缩并上传到qq群中
+
+
 ## Dependence
 
 ```bash
