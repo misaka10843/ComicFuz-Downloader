@@ -1,5 +1,10 @@
 ![qwq](./repository-open-graph-template.png)
 
+> [!WARNING]
+> 此仓库在近期不会进行维护，如果您是希望下载杂志类，请使用 [Mini Ver](https://github.com/misaka10843/ComicFuz-MiniDownloader) 
+> 
+> 如果是希望下载非杂志类，请使用actions或源码进行下载
+
 ## 简介
 
 使用python来下载Comic-fuz中的漫画/单行本/杂志！
